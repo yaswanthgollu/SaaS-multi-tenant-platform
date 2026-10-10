@@ -9,7 +9,7 @@
     "dev": "nodemon server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "yaswanthgollu",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
