@@ -6,14 +6,14 @@ const { access } = require('node:fs');
 class AuthService{
     // Register New User
     async registerUser({fullName, email, password}) {
-        const duplicate = await user.findOne({ email }).exec();
+        const duplicate = await User.findOne({ email }).exec();
         if( duplicate ){
             throw new Error('An account with this email already exists');
         }
 
         const hashedPwd = await bcrypt.hash(password, 10);
 
-        const newUser = await user.Create({
+        const newUser = await User.create({
             fullName,
             email,
             password: hashedPwd
@@ -82,11 +82,11 @@ class AuthService{
 
     // Silent Access Token Refresh using HttpOnly cookie
     async handleRefreshToken(cookies){
-        if(!cookies?.jwt) throw new Error('NO_Cookie');
+        if(!cookies?.jwt) throw new Error('NO_COOKIE');
         
         const refreshToken = cookies.jwt;
 
-        const foundUser = await user.findOne({refreshToken}).exec();
+        const foundUser = await User.findOne({refreshToken}).exec();
         if(!foundUser){
             // Potential refresh token reuse detected! Clear cookie for safety.
             throw new Error('INVALID_REFRESH');
@@ -126,11 +126,11 @@ class AuthService{
         {
             return;
         }
-        const foundUser = await user.findOne({ refreshToken }).exec();
+        const foundUser = await User.findOne({ refreshToken }).exec();
         if(!foundUser) return;
 
         // Remove token from user's active session array
-        foundUser.refreshtoken = foundUser.refreshToken.filter(rt => rt !== refreshToken);
+        foundUser.refreshToken = foundUser.refreshToken.filter(rt => rt !== refreshToken);
         await foundUser.save();
     }
 };

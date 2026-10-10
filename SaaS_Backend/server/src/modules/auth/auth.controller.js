@@ -33,7 +33,7 @@ const login = async (req, res ) => {
         res.cookie('jwt', newRefreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'None',
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
             maxAge: 7*24*60*60*1000
         });
 
@@ -51,7 +51,11 @@ const refreshToken = async (req, res) => {
         if (error.message === 'NO_COOKIE'){
             return res.status(401).json({ message: 'Unauthorized: No refresh cookie found.'});
         }
-        res.clearCookie('jwt', {httpOnly:true, sameSite: 'None', secure: process.env.NODE_ENV === 'production'});
+        res.clearCookie('jwt', {
+            httpOnly: true,
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+            secure: process.env.NODE_ENV === 'production'
+        });
         res.status(403).json({message: 'Forbidden: Session expired or invalid.'});
     }
 };
@@ -67,7 +71,7 @@ const logout = async(req, res) => {
 
         res.clearCookie('jwt', {
             httpOnly: true,
-            sameSite: 'None',
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
             secure: process.env.NODE_ENV === 'production'
         });
         res.status(200).json({message: 'Logged out successfully.'});
