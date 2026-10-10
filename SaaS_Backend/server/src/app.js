@@ -20,6 +20,10 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
+
+app.get('/', (req, res)=>{
+    res.status(200).json({message: 'Index page'});
+})
 // Health check
 app.get('/health', (req, res)=>{
     res.status(200).json({ status: 'OK', message: 'SaaS Multi-Tenant API is running.'});
